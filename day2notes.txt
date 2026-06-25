@@ -1,0 +1,53 @@
+=========================================
+MERN BOOTCAMP DAY 2: CORE JS MECHANICS
+=========================================
+
+1. ARROW FUNCTIONS & EXECUTION CONTEXT (this)
+- The Problem: Traditional `function() {}` blocks create a brand new `this` context. If used inside a callback (like .map() or setTimeout), they "forget" the parent object they belong to.
+- The Fix: Arrow functions `() => {}` use Lexical Scoping. They act like sponges, absorbing the `this` context from whatever block of code surrounds them.
+- When to use: Always use arrow functions for callbacks, array methods, and React components.
+Example:
+const payouts = this.jobHours.map( (hours) => { 
+    return hours * this.baseRate; 
+});
+
+2. TEMPLATE LITERALS
+- The Rule: Replaces messy string concatenation (+). Allows multi-line formatting and direct variable injection.
+- The Trap: They are whitespace-sensitive. Every space you put inside the backticks becomes a permanent part of the string.
+Example: 
+const apiUrl = `${baseUrl}/${endpoint}/${workerId}`;
+
+3. OBJECT DESTRUCTURING
+- The Concept: Instantly unpack specific properties from an object (the "box") into free-standing variables in a single line.
+- The Trap: You cannot unpack an object before it exists. If unpacking nested data, do it in stages.
+Example:
+// Stage 1: Unpack the main payload
+const { id, worker, hours, rate } = ticket;
+// Stage 2: Unpack the nested object
+const { name } = worker;
+
+4. THE SPREAD OPERATOR (...)
+- The Concept: Unpacks the contents of an object or array. 
+- The "Why": In React, state is immutable. You cannot modify an object directly. You must create a new object, spread the old data into it, and overwrite only what changed.
+Example:
+const finalInvoice = { ...worker, id, laborTotal, fee };
+
+5. ES6 MODULES (IMPORT / EXPORT)
+- The Concept: Code is trapped inside its file unless explicitly exported. It cannot be used elsewhere unless explicitly imported.
+- Named Exports: For exporting multiple specific tools from one file. Requires { } on import.
+- Default Exports: For exporting the single main purpose of a file. No { } on import.
+Example:
+// Exporting
+export const calculateFee = (amount) => amount * 0.10; // Named
+export default processTicket;                          // Default
+// Importing
+import { calculateFee } from './utils.js';
+import processTicket from './ticketProcessor.js';
+
+6. BLOCK SCOPING (let and const)
+- The Rule: `var` is dead. It leaks out of { curly braces } and corrupts global variables.
+- const: Use this for 95% of your code (functions, arrays, objects, strict limits). It locks the memory reference.
+- let: Use this only for primitive values (numbers, strings, booleans) that are specifically designed to change over time (like a counter).
+Example:
+const maxRegistrations = 100; // Locked
+let currentWorkers = 45;      // Mutates

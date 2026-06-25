@@ -62,3 +62,100 @@ const loadWorker = async (workerId) => {
         console.error("Failed to load:", error.message);
     }
 }
+
+
+// <--------------------------------------------------------->
+
+
+// Parallel Execution (Promise.all)
+
+
+// THE SLOW WAY (Takes 4 seconds)
+const profile = await fetchProfile();
+const reviews = await fetchReviews();
+
+// THE FAST WAY (Takes 2 seconds)
+// Notice how we use array destructuring to unpack the results!
+const [profile, reviews] = await Promise.all([fetchProfile(), fetchReviews()]);
+
+// The Challenge
+
+//You are writing the backend controller that sends the complete data package to the Connect Ustaad frontend.
+
+// Below is the "Slow Way" of writing this function. It fetches the data, but it takes twice as long as it needs to.
+
+// --- simulatedDatabase.js ---
+const getWorkerProfile = (id) => new Promise(res => setTimeout(() => res({ name: "Kamran" }), 2000));
+const getWorkerReviews = (id) => new Promise(res => setTimeout(() => res(["Great work", "On time"]), 2000));
+
+// --- profileController.js ---
+// Rewrite this function to be fast:
+
+const loadFullProfile = async (workerId) => {
+    try {
+        console.log("Fetching data...");
+
+        // --- THE BOTTLENECK ---
+        const profile = await getWorkerProfile(workerId);
+        const reviews = await getWorkerReviews(workerId);
+        // ----------------------
+
+        // --- THE PARALLEL WAY ---
+        const [profile , reviews] = await Promise.all([getWorkerProfile(workerId) , getWorkerReviews(workerId)]);
+        // ------------------------
+        console.log("Profile:", profile);
+        console.log("Reviews:", reviews);
+    } catch (error) {
+        console.error(error.message);
+    }
+};
+
+// <----------------------------------------------------------->
+
+// The Fetch API
+
+const getWeatherData = async () => {
+    try {
+        // Step 1: Connect to the URL
+        const response = await fetch("https://api.weather.com/peshawar");
+        
+        // Step 2: Parse the raw response body into usable JSON
+        const data = await response.json(); 
+        
+        console.log(data);
+    } catch (error) {
+        console.error("Network error:", error.message);
+    }
+};
+
+// // THE CHALLENGE
+// We are going to ping a real, live public test server on the internet called JSONPlaceholder.
+
+// Your Task:
+
+// Write an async arrow function named fetchTestUsers.
+
+// Wrap the logic inside a try/catch block.
+
+// Use fetch() to hit this exact URL: https://jsonplaceholder.typicode.com/users. Await the response and save it to a const named response.
+
+// Parse the response into JSON. Await it, and save it to a const named users.
+
+// Console log the users variable.
+
+// (In the catch block, console log the error message just like you did in the previous exercise).
+
+
+const fetchTestUsers = async () => {
+    try {
+        const response = await fetch("https://jsonplaceholder.typicode.com/users");
+        const users = await response.json();
+        console.log(users);
+
+    } catch (error) {
+        console.error("Failed to fetch users:", error.message);
+    }
+}
+
+
+// <----------------------------------------------------------->

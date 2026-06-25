@@ -1,0 +1,41 @@
+=========================================
+MERN BOOTCAMP DAY 3: ASYNC JAVASCRIPT
+=========================================
+
+1. PROMISES
+- The Concept: A receipt for data that hasn't arrived yet. 
+- States: Pending (waiting), Resolved (success), Rejected (failed).
+
+2. ASYNC / AWAIT
+- The Rule: `await` pauses the execution of a function until a Promise resolves. You can ONLY use `await` inside a function marked as `async`.
+- The "Why": Prevents the entire application from freezing while waiting for a database or API.
+Example:
+const loadWorker = async (id) => {
+    const data = await getWorker(id); 
+};
+
+3. ERROR HANDLING (TRY / CATCH)
+- The Rule: Always wrap external network/database requests in a try/catch block.
+- The "Why": If a Promise rejects (e.g., server crash, internet drop) and you don't catch it, your app will fatally crash.
+Example:
+try {
+    const data = await fetchDatabase();
+} catch (error) {
+    console.error("Network failed:", error.message);
+}
+
+4. PARALLEL EXECUTION (PROMISE.ALL)
+- The Concept: Fires multiple independent network requests at the exact same time instead of waiting for them one by one.
+- The Speed: Cuts loading times in half when fetching unrelated data.
+Example:
+const [profile, reviews] = await Promise.all([
+    getProfile(id), 
+    getReviews(id)
+]);
+
+5. THE FETCH API
+- The Concept: The native JavaScript tool for sending HTTP requests across the internet.
+- The Trap: It requires TWO awaits. One to connect to the server, and one to parse the raw data into JSON.
+Example:
+const response = await fetch("https://api.connectustaad.com/workers");
+const data = await response.json();
