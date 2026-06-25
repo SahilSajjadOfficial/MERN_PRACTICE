@@ -159,3 +159,55 @@ const fetchTestUsers = async () => {
 
 
 // <----------------------------------------------------------->
+// THE BIG BOSS CHALLENGE
+
+
+// The Objective
+// Write a complete module from scratch that handles this entire process.
+
+// The Live Endpoints:
+
+// Workers API: https://jsonplaceholder.typicode.com/users
+
+// Job Tickets API: https://jsonplaceholder.typicode.com/posts
+
+// (Note: The Job Tickets API returns objects that have a userId property. This matches the id property from the Workers API).
+
+// The Requirements
+// You must write an object named AdminDashboard. Inside it, write an asynchronous method called generateReport. This method must do the following:
+
+// Safety Net: Wrap the entire execution in a block that can gracefully catch and log any network crashes. If it crashes, the function should return the string "Dashboard initialization failed."
+
+// Max Speed: Hit both live URLs at the exact same time. Do not wait for the workers to load before asking for the tickets.
+
+// Data Parsing: Parse both raw network responses into usable JSON arrays.
+
+// Data Synthesis (The MERN logic): Once you have both arrays, create a const named activeRoster. Map over the workers array. For each worker, use the .filter() method on the tickets array to find out exactly how many active jobs belong to them (where ticket.userId === worker.id).
+
+// The Output: Return an array of formatted strings that looks exactly like this for every single worker:
+// "[Worker Name] from [Worker City] currently has [Number] active job tickets in the database."
+
+const workersAPI = "https://jsonplaceholder.typicode.com/users";
+const ticketsAPI = "https://jsonplaceholder.typicode.com/posts";
+
+const AdminDashboard = {
+    generateReport: async () => {
+        try {
+            const [workersResponse, ticketsResponse] = await Promise.all([fetch(workersAPI), fetch(ticketsAPI)]);
+            const workers = await workersResponse.json();
+            const tickets = await ticketsResponse.json();
+
+            const activeRoster = workers.map(worker => {
+                const activeJobs = tickets.filter(ticket => ticket.userId === worker.id).length;
+                return `${worker.name} from ${worker.address.city} currently has ${activeJobs} active job tickets in the database.`;
+            });
+
+            return activeRoster;
+        } catch (error) {
+            console.error("Dashboard initialization failed:", error.message);
+            return "Dashboard initialization failed.";
+        }
+    }
+}
+
+// <----------------------------------------------------------->
