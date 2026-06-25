@@ -21,3 +21,44 @@ const loadWorker = async (workerId) => {
     const workerData = await getWorkerFromDatabase(workerId);
     console.log(workerData);
 };
+
+//<----------------------------------------------------------------->
+
+// Try and Catch
+
+// --- simulatedDatabase.js ---
+const getWorkerFromDatabase = (id) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const isNetworkStable = Math.random() > 0.5;
+            if (isNetworkStable) {
+                resolve({ id: id, name: "Kamran", trade: "Electrician" });
+            } else {
+                reject(new Error("Database connection timed out."));
+            }
+        }, 1000);
+    });
+};
+// Your Task: Rewrite your loadWorker function.
+
+// Keep the async arrow function structure.
+
+// Wrap your await getWorkerFromDatabase(workerId) and console.log(workerData) inside a try block.
+
+// Add a catch block that accepts an error parameter.
+
+// Inside the catch block, write: console.error("Failed to load:", error.message);
+
+// Reply with your completely updated loadWorker code block.
+// --- profileController.js ---
+// Rewrite your loadWorker function below:
+
+const loadWorker = async (workerId) => {
+    try {
+        const workerData = await getWorkerFromDatabase(workerId);
+        console.log(workerData);
+    }
+    catch (error) {
+        console.error("Failed to load:", error.message);
+    }
+}
