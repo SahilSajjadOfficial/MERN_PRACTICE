@@ -125,3 +125,182 @@ const JobBoard = () => {
 }
 
 export default JobBoard;
+
+// <---------------------------------------------------------->
+
+// Controlled Components
+
+// By making the component "Controlled", you bind the input field directly to a useState variable. Every single time the user presses a keystroke, React updates the state, and the input field simply reflects that state back to the screen. This allows you to validate data in real-time (e.g., instantly warning them if their password is too short).
+
+// Syntax
+import React, { useState } from 'react';
+
+const SearchBar = () => {
+  // 1. Create the state
+  const [query, setQuery] = useState("");
+
+  // 2. Handle the submit event
+  const handleSubmit = (e) => {
+    e.preventDefault(); // CRITICAL: Stops the browser from refreshing the page!
+    console.log("Searching database for:", query);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input 
+        type="text" 
+        // 3. Bind the input to the state (Two-way binding)
+        value={query} 
+        onChange={(e) => setQuery(e.target.value)} 
+      />
+      <button type="submit">Search</button>
+    </form>
+  );
+};
+
+// The Breakdown of e.target.value:
+// e stands for the Event object (what just happened).
+// target is the specific HTML element that triggered the event (the input box).
+// value is the actual text sitting inside that box.
+
+//The Challenge
+
+// You are building the PostJobForm for Connect Ustaad.
+
+// The Requirements:
+
+// Initialize State: Create three separate useState hooks for title, location, and budget. Initialize the first two as empty strings "", and budget as 0.
+
+// The Inputs: Write a <form> containing three <input> fields (text, text, and number) and a submit <button>.
+
+// Two-Way Binding: Attach the correct value and onChange attributes to every single input so they update their respective state variables.
+
+// The Submission: Create a handlePostJob(e) function.
+
+// It must prevent the default page refresh.
+
+// It must create a new object containing the title, location, and budget.
+
+// It must console.log() that new object.
+
+// Wire it up: Attach the handlePostJob function to the <form>'s onSubmit attribute.
+
+import React, { useState } from 'react';
+
+const PostJobForm = () => {
+  // 1. Initialize your three state variables here
+  const [title , setTitle] = useState("");
+  const [location , setLocation] = useState("");
+  const [budget , setBudget] = useState(0);
+  
+  // 2. Write your submit handler here
+  const handlePostJob = (e) => {
+    e.preventDefault();
+    console.log("New Job:", {title , location , budget});
+  };
+
+  // 3. Build the UI and bind the inputs
+  return (
+    <div className="form-container">
+      <h2>Post a New Job</h2>
+      
+      <form onSubmit={handlePostJob}>
+        {/* Title Input */}
+        <input type="text" placeholder='Enter Title' value={title} onChange={(e) => setTitle(e.target.value)} />
+        {/* Location Input */}
+        <input type="text" placeholder='Enter Location' value={location} onChange={(e) => setLocation(e.target.value)} />
+        {/* Budget Input */}
+        <input type="number" placeholder='Enter Budget' value={budget} onChange={(e) => setBudget(e.target.value)} />
+        <button type="submit">Post Job</button>
+      </form>
+    </div>
+  );
+};
+
+export default PostJobForm;
+
+// <----------------------------------------------------------->
+
+// THE BOSS CHALLENGE
+
+// You are building the Worker Task Dashboard for Connect Ustaad. This component must track a list of tasks, allow the user to add new tasks via a form, and render the UI conditionally based on task status.
+
+// The Requirements:
+
+// Complex State: * Initialize a state variable called tasks using the provided default array.
+
+// Initialize a state variable called newTaskInput as an empty string.
+
+// The Form (Controlled Component):
+
+// Bind the <input> to newTaskInput.
+
+// Wire the <form> to trigger handleAddTask.
+
+// The Submission Logic (handleAddTask):
+
+// Prevent the page refresh.
+
+// Create a new object. Give it a random ID (e.g., Date.now()), the title from your input state, and set isPending to true.
+
+// Update the tasks array by adding this new object to it. (Hint: Use the spread operator [...tasks, newTaskObject]).
+
+// Clear the input field so the user can type again.
+
+// The List Rendering (.map):
+
+// Map over the tasks state array inside the UI.
+
+// Render a <div> for each task. Do not forget the key.
+
+// Conditional Rendering:
+
+// Inside the mapped task <div>, render the task title.
+
+// Use a ternary operator to check task.isPending. If true, render <span className="badge-warning">Pending</span>. If false, render <span className="badge-success">Completed</span>.
+
+import React, { useState } from 'react';
+
+const WorkerTaskDashboard = () => {
+  // 1. Setup State
+  const initialTasks = [
+    { id: 1, title: 'Buy copper wire', isPending: false },
+    { id: 2, title: 'Call client in Hayatabad', isPending: true }
+  ];
+  let newTaskInput = "";
+  
+  const [tasks, setTasks] = useState(initialTasks);
+  const [newTaskInput, setNewTaskInput] = useState("");
+
+  // 2. Form Submission Handler
+  const handleAddTask = (e) => {
+    <form onSubmit={WorkerTaskDashboard}>
+      <input type="text" value={newTaskInput} onChange={(e) => setNewTaskInput(e.target.value)} />
+    </form>
+  };
+
+  // 3. UI Construction
+  return (
+    <div className="dashboard">
+      <h2>My Daily Tasks</h2>
+      
+      {/* Form Section */}
+      <form>
+        <input 
+          type="text" 
+          placeholder="What needs to be done?" 
+        />
+        <button type="submit">Add Task</button>
+      </form>
+
+      {/* List Section */}
+      <div className="task-list">
+        
+        {/* Write your .map() logic here */}
+        
+      </div>
+    </div>
+  );
+};
+
+export default WorkerTaskDashboard;
