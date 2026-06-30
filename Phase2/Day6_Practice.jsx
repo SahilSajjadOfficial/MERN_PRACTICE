@@ -262,45 +262,70 @@ export default PostJobForm;
 import React, { useState } from 'react';
 
 const WorkerTaskDashboard = () => {
-  // 1. Setup State
+  // --- PART 1: INITIAL DATA ---
   const initialTasks = [
     { id: 1, title: 'Buy copper wire', isPending: false },
     { id: 2, title: 'Call client in Hayatabad', isPending: true }
   ];
-  let newTaskInput = "";
   
+  // --- PART 2: STATE MANAGEMENT ---
   const [tasks, setTasks] = useState(initialTasks);
   const [newTaskInput, setNewTaskInput] = useState("");
 
-  // 2. Form Submission Handler
+  // --- PART 3: THE ENGINE (JavaScript Logic) ---
   const handleAddTask = (e) => {
-    <form onSubmit={WorkerTaskDashboard}>
-      <input type="text" value={newTaskInput} onChange={(e) => setNewTaskInput(e.target.value)} />
-    </form>
+    e.preventDefault(); 
+    
+    // Prevent adding empty tasks
+    if (newTaskInput.trim() === "") return; 
+
+    // Create the new task object
+    const newTask = {
+      id: Date.now(), 
+      title: newTaskInput,
+      isPending: true
+    };
+
+    // Update state arrays and clear input
+    setTasks([...tasks, newTask]); 
+    setNewTaskInput(""); 
   };
 
-  // 3. UI Construction
+  // --- PART 4: THE STEERING WHEEL (UI & JSX) ---
   return (
     <div className="dashboard">
       <h2>My Daily Tasks</h2>
       
-      {/* Form Section */}
-      <form>
+      {/* 4A: The Form */}
+      <form onSubmit={handleAddTask}>
         <input 
           type="text" 
           placeholder="What needs to be done?" 
+          value={newTaskInput}
+          onChange={(e) => setNewTaskInput(e.target.value)}
         />
         <button type="submit">Add Task</button>
       </form>
 
-      {/* List Section */}
+      {/* 4B: The List */}
       <div className="task-list">
-        
-        {/* Write your .map() logic here */}
-        
+        {tasks.map((task) => (
+          <div key={task.id} className="task-card">
+            <span>{task.title} - </span>
+            
+            {/* Conditional Rendering inside the map */}
+            {task.isPending ? (
+              <span className="text-red-500">Pending</span>
+            ) : (
+              <span className="text-green-500">Completed</span>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 export default WorkerTaskDashboard;
+
+// <--------------------------------------------------------------->
