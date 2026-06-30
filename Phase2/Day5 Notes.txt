@@ -1,0 +1,94 @@
+=======================================================================
+DAY 5: REACT ARCHITECTURE & JSX
+Phase 2 Completion Notes | MERN Stack Roadmap
+=======================================================================
+
+-----------------------------------------------------------------------
+CONCEPT 1: THE VIRTUAL DOM, JSX, & COMPONENTS
+-----------------------------------------------------------------------
+The 'Why': Modifying the browser's actual HTML (Real DOM) is slow. React 
+uses a lightweight, invisible copy (Virtual DOM) to calculate the minimum 
+required changes. 
+
+JSX (JavaScript XML): Looks like HTML, acts like JavaScript. It allows 
+us to bundle UI and logic into reusable building blocks called Components.
+
+The 3 Strict Rules of JSX:
+1. You must return exactly ONE single parent element (e.g., a <div> or <>).
+2. Use `className` instead of `class` (`class` is reserved for JS OOP).
+3. All tags must be closed, even self-closing ones (<img />, <br />, <input />).
+
+Example Component:
+const WorkerProfile = () => {
+    return (
+        <div className="card">
+            <h2>Worker Name</h2>
+            <hr />
+        </div>
+    );
+};
+
+
+-----------------------------------------------------------------------
+CONCEPT 2: PROPS & STATE
+-----------------------------------------------------------------------
+The 'Why': Components need dynamic data to be reusable. 
+
+PROPS (Properties): 
+- Data passed DOWN from a parent component to a child component.
+- Strictly READ-ONLY. A child cannot modify its own props.
+- Extracted using Object Destructuring: ({ name, profession })
+
+STATE (useState):
+- The component's private, internal memory.
+- When state changes, React automatically re-renders that specific UI component.
+- Extracted using Array Destructuring (position matters, names do not).
+
+Syntax:
+const [isBooked, setIsBooked] = useState(false);
+
+
+-----------------------------------------------------------------------
+CONCEPT 3: INDUSTRY NAMING CONVENTIONS
+-----------------------------------------------------------------------
+Writing code that other developers can instantly understand.
+
+1. The State Variable (Booleans):
+- Always start with prefixes like `is`, `has`, `can`, or `should`.
+- Example: `isBooked`, `hasPaid`.
+
+2. The Setter Function:
+- Always start with `set` followed by the exact name of the state (CamelCase).
+- Example: `setIsBooked`, `setHasPaid`.
+
+3. The Event Handler:
+- Always start with `handle` followed by the action. Must begin with a lowercase letter.
+- Example: `handleBooking`, `handleClick`.
+
+
+-----------------------------------------------------------------------
+MASTER COMBINATION: STATEFUL COMPONENTS
+-----------------------------------------------------------------------
+const WorkerProfile = ({ name, avatarUrl }) => { 
+    // 1. Initialize State
+    const [isBooked, setIsBooked] = useState(false);
+
+    // 2. The Handler (The Engine)
+    const handleBooking = () => {
+        setIsBooked(true);
+    };
+
+    // 3. The UI (The Steering Wheel)
+    return (
+        <div className="card">
+            <img src={avatarUrl} alt="Profile" />
+            <h2>{name}</h2>
+            
+            {/* Wiring the UI to the Logic */}
+            <button onClick={handleBooking}>
+                {isBooked ? "Requested" : "Book Now"}
+            </button>
+        </div>
+    );
+};
+=======================================================================
