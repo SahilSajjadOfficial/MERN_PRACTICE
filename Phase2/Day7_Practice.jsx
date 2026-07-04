@@ -5,7 +5,7 @@
 // Adding state to a component 
 // Call useState at the top level of your component to declare one or more state variables.
 
-import { useState } from 'react';
+import { Component, useState } from 'react';
 
 function MyComponent() {
     const [age, setAge] = useState(42);
@@ -73,12 +73,12 @@ export default function ScoreBoard() {
 
 // Write the corrected handleScoreIncrease function completely from scratch.
 
-1 . Answer : The bug is happening because there is a pitfall when you write
-setScore(score + 1);
-setScore(score + 1);
-this score will get the value of the 0 that is being passed in the useState. and it do not update the value of the variable score it would remain the same 0.
+// 1 . Answer : The bug is happening because there is a pitfall when you write
+// setScore(score + 1);
+// setScore(score + 1);
+// this score will get the value of the 0 that is being passed in the useState. and it do not update the value of the variable score it would remain the same 0.
 
-2. Solution
+// 2. Solution
 import { useState } from 'react';
 
 export default function ScoreBoard() {
@@ -151,8 +151,120 @@ export default function UserDetails({ userId }) {
   );
 }
 
-Your Task:
+// Your Task:
 
-Explain conceptually why the component is failing to update when the userId prop changes. How is React interpreting this hook?
+// Explain conceptually why the component is failing to update when the userId prop changes. How is React interpreting this hook?
 
-Write the corrected useEffect block completely from scratch.
+// Write the corrected useEffect block completely from scratch.
+
+// 1. Answer : 
+// The code failed because of the dependency array—the empty brackets [] at the very end of the useEffect.
+
+// Think of useEffect as a contract you sign with React.
+
+// If you give it no array at all, it runs on every single render. (Usually causes infinite loops).
+
+// If you give it an empty array [], the contract says: "Run this exactly ONE time when the component first appears on the screen, and NEVER again, no matter what happens."
+
+// So, in the previous code, when the component first loaded with userId = 1, it fetched the data perfectly. But when the parent component changed the prop to userId = 2, React looked at your contract (the empty []), saw that it wasn't instructed to watch for any changes, and completely ignored the fetch function. It stubbornly kept showing the data for User 1.
+
+// To fix it, you simply put the variable you want React to watch inside those brackets: [userId]. That tells React: "Re-run the fetch function if, and only if, the userId changes."
+
+// 2. Answer :
+
+// Rewrite the useEffect block completely from scratch so that when the roomId prop changes, React automatically disconnects from the old room and connects to the new one.
+
+// Read the syntax carefully. Think about the contract you are making with React. Write the code.
+
+
+import { useEffect, useState } from 'react';
+import ChatAPI from './api';
+
+export default function ChatRoom({ roomId }) {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    // Step 1: Connect to the room
+    ChatAPI.connect(roomId);
+
+    // Step 2: A cleanup function that disconnects when leaving
+    return () => {
+      ChatAPI.disconnect(roomId);
+    };
+  }, [roomId]); // <--- The bug is here.
+
+  return (
+    <div>
+      <h2>Room: {roomId}</h2>
+      {/* UI to display messages */}
+    </div>
+  );
+}
+
+// <---------------------------------------------------------------->
+
+// useContext
+
+// using context is a three step process
+// 1 Create it 
+// 2 Provide it (wrap your Components)
+// 3 Consume it
+
+import { createContext, useContext } from 'react';
+
+// 1. Create the Context
+const ThemeContext = createContext();
+
+function App() {
+  // 2. Provide the Context to children
+  return (
+    <ThemeContext.Provider value="dark">
+      <Navbar />
+    </ThemeContext.Provider>
+  );
+}
+
+function Navbar() {
+  // 3. Consume the Context
+  const theme = useContext(ThemeContext);
+  return <div>Current Theme: {theme}</div>;
+}
+
+function Profile(){
+    const user = useContext(UserContext)
+    return (
+        <div>
+            <h2>Welcome , {user.name}</h2>
+            <p>Role : {user.role}</p>
+        </div>
+    )
+}
+
+// <-------------------------------------------------------->
+
+// useReducer
+
+// Syntax
+
+import { useReducer } from 'react';
+
+// 1. The Reducer Function (usually defined outside the component)
+function counterReducer(state, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + 1 };
+    default:
+      return state;
+  }
+}
+
+function Counter() {
+  // 2. The Hook
+  const [state, dispatch] = useReducer(counterReducer, { count: 0 });
+
+  return (
+    <button onClick={() => dispatch({ type: 'INCREMENT' })}>
+      Count: {state.count}
+    </button>
+  );
+}
